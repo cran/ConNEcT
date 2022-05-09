@@ -51,6 +51,6 @@ Test significance
 \examples{
  signdata=cbind(c(1,0,1,0,1,0,1,0),c(1,1,1,1,0,0,0,0),c(0,0,0,0,0,0,1,1))
            colnames(signdata) <-c ('momangry', 'momsad','adoangry')
-           conTest(data=signdata,lag=1,conFun=funClassJacc,
+           conTest(data=signdata,lag=1,conFun=funClassJacc,typeOfTest='model',
            adCor=FALSE)
 }

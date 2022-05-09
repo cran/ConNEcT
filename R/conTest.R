@@ -18,12 +18,13 @@
 #' @return \code{para}: Saving the parameter settings for
 #'               \code{typeOfTest}, \code{adCor}, \code{nBlox}, \code{nReps}, \code{funName}, \code{lag}, \code{varNames}
 #' @return \code{samples} Saved generated replicates/samples for each variable combination under \code{$NameVariable1$NameVariable2}
+#' 
+#' @importFrom  stats runif
 #' @export
-#' @importFrom Rlab rbern
 #'
 #' @examples  signdata=cbind(c(1,0,1,0,1,0,1,0),c(1,1,1,1,0,0,0,0),c(0,0,0,0,0,0,1,1))
 #'            colnames(signdata) <-c ('momangry', 'momsad','adoangry')
-#'            conTest(data=signdata,lag=1,conFun=funClassJacc,
+#'            conTest(data=signdata,lag=1,conFun=funClassJacc,typeOfTest='model',
 #'            adCor=FALSE)
 
 conTest<-function(data,lag=0,conFun,
@@ -44,18 +45,19 @@ conTest<-function(data,lag=0,conFun,
     for (v in 1: nVars){
       ts_para[v,]<-unlist(getProb(datsCC[,v]))
     }
-
+    
     for (va in 1: nVars){
+      runif_array = array(runif(nReps*nPoints), dim=c(nPoints,nReps))
       if(adCor==FALSE){
-        ts_samples[,,va]<-array(rbern(nReps*nPoints,ts_para[va,1]), dim=c(nPoints,nReps))
+        ts_samples[,,va]<-as.integer(runif_array < ts_para[va,1])
 
       }else{
-        ts_samples[1,,va]<-rbern(nReps,ts_para[va,1])
+        ts_samples[1,,va] <- as.integer(runif_array[1,] < ts_para[va,1])
         for (tp in 2:nPoints){
           in1dex1<-which(ts_samples[(tp-1),,va]==1)
           in1dex0<-which(ts_samples[(tp-1),,va]==0)
-          ts_samples[tp,in1dex1,va]<-rbern(length(in1dex1),ts_para[va,2])
-          ts_samples[tp,in1dex0,va]<-rbern(length(in1dex0),ts_para[va,3])
+          ts_samples[tp,in1dex1,va]<-as.integer(runif_array[tp,in1dex1] < ts_para[va,2])
+          ts_samples[tp,in1dex0,va]<-as.integer(runif_array[tp,in1dex0] < ts_para[va,3])
         }
       }
     }

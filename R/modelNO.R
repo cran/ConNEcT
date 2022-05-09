@@ -7,23 +7,23 @@
 #'
 #' @return Time series vector that is similar to the original one considering relative frequency
 #'
+#' @importFrom  stats runif
 #' @export
-#'
-#' @importFrom  Rlab rbern
 #'
 #' @examples
 #' ts=rep(c(1,1,1,1,1,0,0,0,0,0),15)
 #' modelNO(ts)
 #'
 
-modelNO<-function(vec){
+modelNO <- function(vec){
 
-  nTpoints<-length(vec)
+  nTpoints <- length(vec)
+  para <- mean(vec,na.rm=TRUE)
 
-  para<-mean(vec,na.rm=TRUE)
-
-  #depends on Rlab
-  x<-rbern(nTpoints,para)
+  #depends on Rlab nevermore!
+  x <- array(NA,nTpoints)
+  runif_array = runif(nTpoints)
+  x <- as.integer(runif_array < para)
 
   return(x)
 }
